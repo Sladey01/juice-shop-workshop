@@ -60,6 +60,7 @@ const vulnCodeSnippet = require('./routes/vulnCodeSnippet')
 const vulnCodeFixes = require('./routes/vulnCodeFixes')
 const angular = require('./routes/angular')
 const easterEgg = require('./routes/easterEgg')
+const eggs = require('./routes/eggs')
 const premiumReward = require('./routes/premiumReward')
 const privacyPolicyProof = require('./routes/privacyPolicyProof')
 const appVersion = require('./routes/appVersion')
@@ -554,6 +555,7 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.get('/rest/user/whoami', security.updateAuthenticatedUsers(), currentUser())
   app.get('/rest/user/authentication-details', authenticatedUsers())
   app.get('/rest/products/search', search())
+  app.get('/rest/users/search', search.searchUsers())
   app.get('/rest/basket/:id', basket())
   app.post('/rest/basket/:id/checkout', order())
   app.put('/rest/basket/:id/coupon/:coupon', coupon())
@@ -602,6 +604,7 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.post('/b2b/v2/orders', b2bOrder())
 
   /* File Serving */
+  app.get('/rest/eggs', eggs())
   app.get('/the/devs/are/so/funny/they/hid/an/easter/egg/within/the/easter/egg', easterEgg())
   app.get('/this/page/is/hidden/behind/an/incredibly/high/paywall/that/could/only/be/unlocked/by/sending/1btc/to/us', premiumReward())
   app.get('/we/may/also/instruct/you/to/refuse/all/reasonably/necessary/responsibility', privacyPolicyProof())

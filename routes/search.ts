@@ -6,6 +6,7 @@
 import models = require('../models/index')
 import { type Request, type Response, type NextFunction } from 'express'
 import { UserModel } from '../models/user'
+import { Op } from 'sequelize'
 
 import * as utils from '../lib/utils'
 const challengeUtils = require('../lib/challengeUtils')
@@ -16,7 +17,7 @@ class ErrorWithParent extends Error {
 }
 
 // vuln-code-snippet start unionSqlInjectionChallenge dbSchemaChallenge
-module.exports = function searchProducts () {
+function searchProducts () {
   return (req: Request, res: Response, next: NextFunction) => {
     let criteria: any = req.query.q === 'undefined' ? '' : req.query.q ?? ''
     criteria = (criteria.length <= 200) ? criteria : criteria.substring(0, 200)
@@ -72,3 +73,29 @@ module.exports = function searchProducts () {
   }
 }
 // vuln-code-snippet end unionSqlInjectionChallenge dbSchemaChallenge
+
+function searchUsers () {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let criteria: string = req.query.q === 'undefined' ? '' : (req.query.q as string) ?? ''
+      criteria = (criteria.length <= 200) ? criteria : criteria.substring(0, 200)
+
+      const users = await UserModel.findAll({
+        where: {
+          [Op.or]: [
+            { username: { [Op.like]: `%${criteria}%` } },
+            { email: { [Op.like]: `%${criteria}%` } }
+          ]
+        },
+        attributes: ['id', 'username', 'email', 'role', 'profileImage']
+      })
+
+      res.json(utils.queryResultToJson(users))
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+
+module.exports = searchProducts
+module.exports.searchUsers = searchUsers
