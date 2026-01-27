@@ -14,7 +14,7 @@ If you experience different results than the workshop leader, try using a more s
 
 ```
 # Clone this repo
-git clone https://github.com/dylansnyk-org/juice-shop-workshop
+git clone https://github.com/thavelock/juice-shop-workshop
 
 # Install the Snyk CLI
 npm install -g snyk
